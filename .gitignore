@@ -1,0 +1,4 @@
+.idea/
+venv/
+src/sqlite.db
+docker-compose.yml
