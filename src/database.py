@@ -12,6 +12,7 @@ class URL(SQLAlchemyBase):
     url_id = sa.Column(sa.String(8), primary_key=True)
     url = sa.Column(sa.String(2000))
     visits = sa.Column(sa.Integer)
+    timestamp = sa.Column(sa.Integer)
 
     def __repr__(self):
         return f"<URL(url_id='{self.url_id}', url='{self.url}', visits='{self.visits}')>"
