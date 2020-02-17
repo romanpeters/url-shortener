@@ -1,7 +1,8 @@
-import validators
+import time
 import hashlib
 import base64
 from urllib.parse import urlparse, ParseResult
+import validators
 from flask import Flask, render_template, redirect, request
 from werkzeug.urls import url_fix
 import database as db
@@ -36,13 +37,31 @@ def go_to(url_id):
     session = db.Session()
     url_entry = session.query(db.URL).filter_by(url_id=url_id).first()
     if not url_entry:
-        session.close()
         return render_template("404.html")
     url_entry.visits += 1
     session.add(url_entry)
     session.commit()
     return redirect(url_entry.url, code=302)
 
+
+@app.route("/<string:url_id>/stats", methods=['GET'])
+def stats(url_id):
+    session = db.Session()
+    url_entry = session.query(db.URL).filter_by(url_id=url_id).first()
+    session.close()
+    if not url_entry:
+        return render_template("404.html")
+    return render_template('stats.html', url=url_entry.url, shortcut=f"{request.host_url}{url_id}",
+                           visits=url_entry.visits)
+
+
+@app.route("/api")
+def api():
+    return "hello"
+
+@app.route("/api/<string:url_id>")
+def api_url_id(url_id):
+    return url_id
 
 def fix_url(url: str) -> str:
     url = url.strip()
@@ -72,7 +91,7 @@ def hash_value(value: str, hash_length: int) -> str:
     return str(base64.urlsafe_b64encode(hashlib.md5(value.encode('utf-8')).digest()), 'utf-8')[:hash_length]
 
 
-def add_url(url: str):
+def add_url(url: str) -> str:
     """Generates a unique random id"""
     session = db.Session()
     url_entry = session.query(db.URL).filter_by(url=url).first()
@@ -85,14 +104,23 @@ def add_url(url: str):
         hashed_value = hash_value(value=url, hash_length=length)
         url_entry = session.query(db.URL).filter_by(url_id=hashed_value).first()
         if not url_entry:
-            url_id = hashed_value
+            if hashed_value not in {"api"}:
+                url_id = hashed_value
         else:
             length += 1
-    url_entry = db.URL(url_id=url_id, url=url, visits=0)
+    url_entry = db.URL(url_id=url_id, url=url, visits=0, timestamp=int(time.time()))
     session.add(url_entry)
     session.commit()
     return url_id
 
+def get_url(url_id: str) -> db.URL or None:
+    session = db.Session()
+    url_entry = session.query(db.URL).filter_by(url_id=url_id).first()
+    if not url_entry:
+        session.close()
+        return None
+    session.commit()
+    return url_entry
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)
