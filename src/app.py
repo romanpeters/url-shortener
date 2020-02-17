@@ -1,8 +1,9 @@
 import validators
 import hashlib
 import base64
-from urllib.parse import urlparse
+from urllib.parse import urlparse, ParseResult
 from flask import Flask, render_template, redirect, request
+from werkzeug.urls import url_fix
 import database as db
 
 app = Flask(__name__)
@@ -11,12 +12,11 @@ app = Flask(__name__)
 @app.route("/", methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        print(request.form)
         url = request.form['url']
         if url:
-            url = url.strip()
-            if not (url.startswith("https://") or url.startswith("http://")):
-                url = f"http://{url}"
+            print(url, '->', end=" ")
+            url = fix_url(url)
+            print(url)
 
             if not validators.url(url):
                 print("invalid")
@@ -44,10 +44,32 @@ def go_to(url_id):
     return redirect(url_entry.url, code=302)
 
 
-def hash_value(value, hash_length) -> str:
+def fix_url(url: str) -> str:
+    url = url.strip()
+    url = url_fix(url)
+    scheme = "https" if url.startswith("https") else "http"
+    parsed_url = urlparse(url=url, scheme=scheme)
+    if parsed_url.netloc:
+        netloc = parsed_url.netloc.lower()
+        path = parsed_url.path if parsed_url.netloc else ''
+    else:
+        if '/' in parsed_url.path:
+            _split_path = parsed_url.path.split('/')
+            netloc = _split_path[0].lower()
+            path = '/'.join(_split_path[1:])
+        else:
+            netloc = parsed_url.path.lower()
+            path = ''
+    parsed_url = ParseResult(scheme, netloc, path, *parsed_url[3:])
+    url = parsed_url.geturl()
+    return url
+
+
+def hash_value(value: str, hash_length: int) -> str:
+    value = value.lower()
     if hash_length <= 0:
         return ""
-    return base64.urlsafe_b64encode(hashlib.md5(value).digest())[:hash_length-1]
+    return str(base64.urlsafe_b64encode(hashlib.md5(value.encode('utf-8')).digest()), 'utf-8')[:hash_length-1]
 
 
 def add_url(url: str):

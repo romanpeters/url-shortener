@@ -2,3 +2,4 @@
 venv/
 src/sqlite.db
 docker-compose.yml
+*/__pycache__/
