@@ -21,12 +21,12 @@ endpoints = [{"path": "/api",
               "name": "set_link",
               "method": "POST",
               "description": "Create a new link.",
-              "request": {"url": "{destination_url}"}},
+              "data": {"url": "{destination_url}"}},
              {"path": "/api/links/{id}",
               "name": "set_link_with_id",
               "method": "POST",
               "description": "Create a new link with an id.",
-              "request": {"url": "{destination_url}"}}
+              "data": {"url": "{destination_url}"}}
              ]
 
 
