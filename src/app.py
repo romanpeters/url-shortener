@@ -69,7 +69,7 @@ def hash_value(value: str, hash_length: int) -> str:
     value = value.lower()
     if hash_length <= 0:
         return ""
-    return str(base64.urlsafe_b64encode(hashlib.md5(value.encode('utf-8')).digest()), 'utf-8')[:hash_length-1]
+    return str(base64.urlsafe_b64encode(hashlib.md5(value.encode('utf-8')).digest()), 'utf-8')[:hash_length]
 
 
 def add_url(url: str):
@@ -80,7 +80,7 @@ def add_url(url: str):
         session.close()
         return url_entry.url_id
     url_id = None
-    length = 3
+    length = 2
     while not url_id:
         hashed_value = hash_value(value=url, hash_length=length)
         url_entry = session.query(db.URL).filter_by(url_id=hashed_value).first()
