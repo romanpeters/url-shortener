@@ -1,9 +1,9 @@
 from urllib.parse import urlparse
 import validators
-from flask import Flask, render_template, redirect, request
-import database as db
-from url import fix_url
+from flask import render_template, redirect, request
 
+from app import database as db
+from app.url import fix_url
 from app import app
 
 @app.route("/", methods=['GET', 'POST'])

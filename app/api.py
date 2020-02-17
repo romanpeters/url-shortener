@@ -1,13 +1,8 @@
-import time
-import string
-import hashlib
-import base64
-from urllib.parse import urlparse, ParseResult
+from urllib.parse import urlparse
 import validators
-from flask import Flask, render_template, redirect, request, jsonify, abort
-from werkzeug.urls import url_fix
-import database as db
+from flask import request, jsonify, abort
 
+from app import database as db
 from app import app
 
 endpoints = [{"path": "/api",

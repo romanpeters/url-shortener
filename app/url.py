@@ -4,7 +4,8 @@ import hashlib
 import base64
 from urllib.parse import urlparse, ParseResult
 from werkzeug.urls import url_fix
-import database as db
+
+from app import database as db
 
 
 def fix_url(url: str) -> str:
