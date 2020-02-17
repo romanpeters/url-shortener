@@ -3,7 +3,7 @@ import validators
 from flask import render_template, redirect, request
 
 from app import database as db
-from app.url import fix_url
+from app.url import fix_url, add_url
 from app import app
 
 @app.route("/", methods=['GET', 'POST'])

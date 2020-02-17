@@ -3,6 +3,7 @@ import validators
 from flask import request, jsonify, abort
 
 from app import database as db
+from app.url import fix_url,fix_url_id, add_url
 from app import app
 
 endpoints = [{"path": "/api",
