@@ -1,7 +1,7 @@
 FROM python:3.7
 
-COPY ./src /app
+COPY . /app
 WORKDIR /app
 RUN pip install --no-cache-dir -U -r requirements.txt
 
-CMD ["python", "-u", "app.py"]
+CMD ["python", "-u", "src/app.py"]
