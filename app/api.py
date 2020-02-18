@@ -56,9 +56,9 @@ def set_link(url_id=None):
             or (request.url.split('/')[-1] != 'links' and 'url_id' in request.json):  # url_id is given twice
         return abort(400)
     url = request.json['url']
-    print(url, '->', end=" ")
+    # print(url, '->', end=" ")
     url = fix_url(url)
-    print(url)
+    # print(url)
 
     if not validators.url(url):
         return abort(400)

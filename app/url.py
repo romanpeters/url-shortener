@@ -76,6 +76,7 @@ def add_url(url: str, url_id: str = None) -> str:
     session.commit()
     return url_id
 
+
 def get_url(url_id: str) -> db.URL or None:
     session = db.Session()
     url_entry = session.query(db.URL).filter_by(url_id=url_id).first()
