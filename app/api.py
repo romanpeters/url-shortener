@@ -24,7 +24,7 @@ def get_all_links():
     for url_entry in url_entries:
         links.append({"url": url_entry.url,
                       "id": url_entry.url_id,
-                      "shortcut": f"{request.host_url}{url_entry.url_id}",
+                      "shortcut": f"{request.host_url.replace('http://', 'https://')}{url_entry.url_id}",
                       "visits": url_entry.visits})
     return jsonify({"links": links})
 
