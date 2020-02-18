@@ -28,6 +28,7 @@ def fix_url(url: str) -> str:
     url = parsed_url.geturl()
     return url
 
+
 def fix_url_id(url_id: str) -> str:
     allowed_chars = ''.join([string.ascii_lowercase, string.ascii_uppercase, string.digits])
     return ''.join([c for c in url_id if c in allowed_chars])
