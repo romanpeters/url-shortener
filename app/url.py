@@ -1,4 +1,5 @@
 import time
+import logging
 import string
 import hashlib
 import base64
@@ -60,7 +61,7 @@ def add_url(url: str, url_id: str = None) -> str:
         # check if url already exists
         if url_entry:
             session.close()
-            return url_id
+            return url_entry.url_id
 
         length = 2  # url_id minimum length
         while not url_id:
@@ -74,6 +75,7 @@ def add_url(url: str, url_id: str = None) -> str:
     url_entry = db.URL(url_id=url_id, url=url, visits=0, timestamp=int(time.time()))
     session.add(url_entry)
     session.commit()
+    logging.info(f"{url} → {url_id}")
     return url_id
 
 
